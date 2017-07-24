@@ -54,8 +54,11 @@ def bisection( func = input_box( default = x^2 - 2, label = "f(x) = ", width = 2
         x_max = input_box( default = 5, label = "x max", width = 5 ), 
         y_min = input_box( default = -2, label = "y min", width = 5 ), 
         y_max = input_box( default = 25, label = "y max", width = 5 ) ):
+    
+    # Set up function       
     f = func.function(x)
 
+    # Set up graph, thicker region, and end points
     graph_f = plot( f, x_min, x_max, color = "purple" )
     graph_f += plot( f, a, b, color = "purple", thickness = 2 )
     pts = point( (a, 0), color = "blue", size = 20 ) + point( (a, f(a)), color = "blue", size = 20 )
@@ -65,31 +68,37 @@ def bisection( func = input_box( default = x^2 - 2, label = "f(x) = ", width = 2
     labels = text( "a", (a, f(a) + (y_max - y_min)/12) )
     labels += text( "b", (b, f(b) + (y_max - y_min)/12) )
 
+    # Check that method applies
     if not( ( f(a) < 0 ) and ( f(b) > 0 ) ):
         if not( ( f(a) > 0 ) and ( f(b) < 0 ) ):
-            print "f(a) and f(b) need to have opposite signs to use Bisection Method."
+            pretty_print( "f(a) and f(b) need to have opposite signs to use Bisection Method." )
             exit(0)
-        
+    
+    # Find actual root and begin iterations for finding approximation    
+    root = find_root( f, a, b )
     for j in range(n) :
         c = (a + b) / 2
         labels += text( str(j+1), (c, f(c) + (y_max - y_min)/12) )
     
+        # On last iteration, print approximation
         if j == n-1 :
             pts += point( (c, 0), color = "green", size=20 ) + point((c, f(c)), color = "green", size=20)
             lines += line([(c,0), (c, f(c))], color = "green", linestyle = "--")
-            print "After " + str(n) + " iterations, our approximation of the root is " + str(c) + "."
+            pretty_print( "After " + str(n) + " iterations, our approximation of the root is " + str(c) + ".\nThe actual root is " + str(root) + "." )
+        
+        # If f(a) and f(c) have opposite signs, adjust b
         elif ( ( f(a) < 0 ) and ( f(c) > 0 ) ) or ( ( f(a) > 0 ) and ( f(c) < 0 ) ):
             b = c
             pts += point( (c, 0), color = "red", size = 20 ) + point((c, f(c)), color = "red", size = 20)
             lines += line([(c,0), (c, f(c))], color = "red", linestyle = "--")
+            
+        # Else adjust a
         else:
             a = c
             pts += point((c, 0), color = "blue", size = 20) + point((c, f(c)), color = "blue", size = 20)
             lines += line([(c,0), (c, f(c))], color = "blue", linestyle = "--")
-    
-    root = find_root( f, a, b )
-    print "The actual root is " + str(root) + "."
-        
+     
+    # Combine plots and show graph    
     graph = graph_f + pts + lines + labels
     graph.show()
 
@@ -97,6 +106,6 @@ def bisection( func = input_box( default = x^2 - 2, label = "f(x) = ", width = 2
 </div>
 
 <hr>
-Last modified on July 13th, 2017.
+Last modified on July 24th, 2017.
 </body>
 </html>
