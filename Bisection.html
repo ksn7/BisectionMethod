@@ -36,8 +36,11 @@ $(function () {
 <div class="latex">
     \textrm{This demo shows the Bisection Method of finding a root. }
     \\
-    \textrm{This shows that given two endpoints } a \textrm{ and } b \textrm{, where } f(a) \textrm{ and } f(b) \textrm{ have opposite signs, there must be a point } c 
-        \textrm{ at which } f(c) = 0.
+    \textrm{So long as } f(a) \textrm{ and } f(b) \textrm{ have opposite signs and } f \textrm{ is continuous, } 
+    \\
+    f \textrm{ will have a zero in the interval } [a, \, b] \textrm{ (Intermediate Value Theorem). The bisection method }
+    \\
+    \textrm{ repetitively cuts the search interval in half, and checks which side is guaranteed to contain a zero. }
 </div>
 
 <hr>
@@ -45,7 +48,7 @@ $(function () {
 <div class="compute">
 <script type="text/x-sage">
 
-@interact( layout=[ ['func', 'a', 'b', 'n'], ['x_min', 'x_max', 'y_min', 'y_max'] ])
+@interact( layout=[ ['func', 'a', 'b', 'n'], ['x_min', 'x_max', 'y_min', 'y_max'], ['show_root'] ])
 def bisection( func = input_box( default = x^2 - 2, label = "f(x) = ", width = 20 ), 
         a = input_box( default = 0, label = "a", width = 5 ), 
         b = input_box( default = 4, label = "b", width = 5 ), 
@@ -53,7 +56,8 @@ def bisection( func = input_box( default = x^2 - 2, label = "f(x) = ", width = 2
         x_min = input_box( default = -1, label = "x min", width = 5 ), 
         x_max = input_box( default = 5, label = "x max", width = 5 ), 
         y_min = input_box( default = -2, label = "y min", width = 5 ), 
-        y_max = input_box( default = 25, label = "y max", width = 5 ) ):
+        y_max = input_box( default = 25, label = "y max", width = 5 ),
+        show_root = False ):
     
     # Set up function       
     f = func.function(x)
@@ -79,15 +83,9 @@ def bisection( func = input_box( default = x^2 - 2, label = "f(x) = ", width = 2
     for j in range(n) :
         c = (a + b) / 2
         labels += text( str(j+1), (c, f(c) + (y_max - y_min)/12) )
-    
-        # On last iteration, print approximation
-        if j == n-1 :
-            pts += point( (c, 0), color = "green", size=20 ) + point((c, f(c)), color = "green", size=20)
-            lines += line([(c,0), (c, f(c))], color = "green", linestyle = "--")
-            pretty_print( "After " + str(n) + " iterations, our approximation of the root is " + str(c) + ".\nThe actual root is " + str(root) + "." )
         
         # If f(a) and f(c) have opposite signs, adjust b
-        elif ( ( f(a) < 0 ) and ( f(c) > 0 ) ) or ( ( f(a) > 0 ) and ( f(c) < 0 ) ):
+        if ( ( f(a) < 0 ) and ( f(c) > 0 ) ) or ( ( f(a) > 0 ) and ( f(c) < 0 ) ):
             b = c
             pts += point( (c, 0), color = "red", size = 20 ) + point((c, f(c)), color = "red", size = 20)
             lines += line([(c,0), (c, f(c))], color = "red", linestyle = "--")
@@ -97,6 +95,15 @@ def bisection( func = input_box( default = x^2 - 2, label = "f(x) = ", width = 2
             a = c
             pts += point((c, 0), color = "blue", size = 20) + point((c, f(c)), color = "blue", size = 20)
             lines += line([(c,0), (c, f(c))], color = "blue", linestyle = "--")
+            
+                # On last iteration, print approximation
+        if j == n-1 :
+            text1 = "After " + str(n) + " iterations, we have a root that lies in the interval [" + str(a) + ", " + str(b) + "]."
+            
+            if show_root == True :
+                text1 += "\nThe actual root is " + str(root) + "."
+            
+            pretty_print( text1 )
      
     # Combine plots and show graph    
     graph = graph_f + pts + lines + labels
@@ -106,6 +113,7 @@ def bisection( func = input_box( default = x^2 - 2, label = "f(x) = ", width = 2
 </div>
 
 <hr>
-Last modified on July 24th, 2017.
+Last modified on July 28th, 2017.
 </body>
 </html>
+
