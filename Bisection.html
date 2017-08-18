@@ -49,14 +49,14 @@ $(function () {
 <script type="text/x-sage">
 
 @interact( layout=[ ['func', 'a', 'b', 'n'], ['x_min', 'x_max', 'y_min', 'y_max'], ['show_root'] ])
-def bisection( func = input_box( default = x^2 - 2, label = "f(x) = ", width = 20 ), 
-        a = input_box( default = 0, label = "a", width = 5 ), 
-        b = input_box( default = 4, label = "b", width = 5 ), 
-        n = input_box( default = 4, label = "n", width = 5 ), 
-        x_min = input_box( default = -1, label = "x min", width = 5 ), 
-        x_max = input_box( default = 5, label = "x max", width = 5 ), 
-        y_min = input_box( default = -2, label = "y min", width = 5 ), 
-        y_max = input_box( default = 25, label = "y max", width = 5 ),
+def bisection( func = input_box( default = x^2 - 2, label = "$f(x) = $", width = 20 ), 
+        a = input_box( default = 0, label = "$a$", width = 5 ), 
+        b = input_box( default = 4, label = "$b$", width = 5 ), 
+        n = input_box( default = 4, label = "$n$", width = 5 ), 
+        x_min = input_box( default = -1, label = "$x_{min}$", width = 5 ), 
+        x_max = input_box( default = 5, label = "$x_{max}$", width = 5 ), 
+        y_min = input_box( default = -2, label = "$y_{min}$", width = 5 ), 
+        y_max = input_box( default = 25, label = "$y_{max}$", width = 5 ),
         show_root = False ):
     
     # Set up function       
@@ -78,6 +78,10 @@ def bisection( func = input_box( default = x^2 - 2, label = "f(x) = ", width = 2
             pretty_print( "f(a) and f(b) need to have opposite signs to use Bisection Method." )
             exit(0)
     
+    # For simiplicity in computation, make a range variable
+    spread = y_max - y_min
+    lines += line([(a, spread / 3 + spread / (4*n)), (b, spread / 3 + spread / (4*n))], marker = "|", color = "purple")
+
     # Find actual root and begin iterations for finding approximation    
     root = find_root( f, a, b )
     for j in range(n) :
@@ -89,19 +93,21 @@ def bisection( func = input_box( default = x^2 - 2, label = "f(x) = ", width = 2
             b = c
             pts += point( (c, 0), color = "red", size = 20 ) + point((c, f(c)), color = "red", size = 20)
             lines += line([(c,0), (c, f(c))], color = "red", linestyle = "--")
+            lines += line([(a, spread / 3 - (j / (4*n)) * spread), (b, spread / 3 - (j / (4*n)) * spread)], marker = "|", color = "blue")
             
         # Else adjust a
         else:
             a = c
             pts += point((c, 0), color = "blue", size = 20) + point((c, f(c)), color = "blue", size = 20)
-            lines += line([(c,0), (c, f(c))], color = "blue", linestyle = "--")
-            
-                # On last iteration, print approximation
+            lines += line([(c,0), (c, f(c))], color = "blue", linestyle = "--")         
+            lines += line([(a, spread / 3 - (j / (4*n)) * spread), (b, spread / 3 - (j / (4*n)) * spread)], marker = "|", color = "red")
+   
+        # On last iteration, print approximation
         if j == n-1 :
-            text1 = "After " + str(n) + " iterations, we have a root that lies in the interval [" + str(a) + ", " + str(b) + "]."
+            text1 = "After " + str(n) + " iterations, we have a root that lies in the interval [%6.7f" %a + ", %6.7f" %b + "]."
             
             if show_root == True :
-                text1 += "\nThe actual root is " + str(root) + "."
+                text1 += "\nThe actual root is %6.7f." %root
             
             pretty_print( text1 )
      
@@ -113,7 +119,7 @@ def bisection( func = input_box( default = x^2 - 2, label = "f(x) = ", width = 2
 </div>
 
 <hr>
-Last modified on July 28th, 2017.
+Last modified on August 18th, 2017.
 </body>
 </html>
 
